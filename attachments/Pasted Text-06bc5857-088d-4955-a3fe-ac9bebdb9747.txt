@@ -1,0 +1,189 @@
+No questions. This is the paste.
+
+The screenshots show the real loop: soil is **wall-only**, each nutrient level has **visible sub-stages**, leftovers buy **family upgrades between raids**, heroes sit on the top bar with abilities, pickaxe raises bones, death is a 50% tax. Names below are stand-ins so the build does not stamp NIS/Acquire trademarks.
+
+---
+
+**PROMPT — Loam Lord. Patch the current project. Do not start over. No backend. No original copyrighted names, portraits, or audio.**
+
+Goal: make the dungeon strategic. Chaos digging should lose. Wall soil, leakage, timed waves with eco gaps, upgrades that only affect new births, and hero skills should decide the run.
+
+**RENAMES (use these everywhere)**
+
+| Role | Call it |
+|---|---|
+| Overlord | Warden |
+| Player tool | Pick |
+| Nutrient producer | Loamite |
+| Nutrient mid | Gnawling |
+| Nutrient heavy | Scalekin |
+| Nutrient apex | Wyrm |
+| Mana producer | Wisp |
+| Mana ranger | Hexwife |
+| Mana mid | Nightkiss |
+| Mana high | Veilmother |
+| Mana peak | Stormbride |
+| Aura buffer | Horned One |
+| Bone sentry | Rattle |
+| Hero corpse | Remains |
+| Loamite death plant | Wiltbloom |
+
+Hero classes stay generic: Swordsman, Archer, Knight, Mage, Priest, Thief.
+
+**1. CAMERA**
+
+- No auto-zoom. Ever. Pinch 0.55×–2.2×. Drag to pan.
+- Exception: when a hero first grabs the Warden, snap the camera to that tile for 1.2 seconds, flash `WARDEN SEIZED`, then return control. That snap is the only forced camera move.
+
+**2. GRID AND STARTING SOIL**
+
+- Story maps **24×18** diggable tiles + bedrock rim. Chamber **28×20**.
+- Nutrients and mana live **only in undug wall tiles**. Never store N/M on dug floor.
+- If any system would write N/M onto a floor tile, immediately dump that value into the nearest undug wall (orthogonal first, then diagonal). If no wall exists in 4 tiles, the value is lost (tax).
+- On stage start, **randomize** every wall: mostly N0, pockets of N1 with 3 visual substages, fewer N2, rare N3, rare M pockets. No two runs share the same pocket map.
+- Visual substages (must be readable without a heatmap), matching the PSP look:
+
+Nutrient
+- N1a thin moss specks
+- N1b patchy moss
+- N1c heavy moss
+- then promote → N2a mushrooms / dirty loam
+- N2b thicker
+- N2c packed pale
+- then promote → N3 white-vein brick
+
+Mana
+- M1a faint spark
+- M1b sparkle
+- M1c strong spark
+- then M2 heart-glow
+- then M3 rune-brick
+
+Digging a wall consumes it and births from **current major level**, not the substage letter:
+- N1 → Loamite
+- N2 → Gnawling
+- N3 → Scalekin (if a Scalekin has already lived this stage, high N can birth Wyrm)
+- M1 → Wisp
+- M2 → Hexwife
+- M3 → Nightkiss / Veilmother / Stormbride by how high M is and whether Hexwife has lived
+
+Block strength of the newborn = `base(family, upgradeTier) × (0.7 + 0.15×majorLevel + 0.05×substage)`. Richer wall = stronger baby.
+
+**3. DIG POWER AND BETWEEN-WAVE UPGRADES**
+
+Start DP: Hollow 100, Mossworks 110, Twin Gate 120, Witchwell 125, Bone 135, Deep Throne 150, Chamber 220.
+
+After a wave is dead:
+- Grant **+15 Dig Power** (“Carrion stipend”).
+- Open **Servant Upgrade** panel. Player may spend DP on family tiers. Costs (copy the screenshot economy, scaled): Loamite 40 / 80 / 120, Gnawling 60 / 100 / 140, Scalekin 80 / 120 / 160, Wisp 50 / 90 / 130, Hexwife line 70 / 110 / 150, Wyrm 90 / 160.
+- **Upgrades apply only to units born after the purchase.** Living units keep old stats.
+- Then **ECO WAIT** (50s / 60s / 70s by stage). Warden may be moved **once** in this window. Hunt time: Warden is locked.
+- Banner at 10s: `RAID IN 10`. Banner when they enter: `HUMANS IN THE HOLLOW`.
+- Add +1 to +2 waves vs current stage list so the upgrade loop has room. Deep Throne = 6 waves, last wave is a named trio with skills.
+
+**4. WARDEN RULES**
+
+- No heroes until Warden is seated. Auto-seat at farthest real corridor if player never taps Throne.
+- Move allowed only in prep / ECO WAIT, **once per window**.
+- Hunt: locked.
+- Grab = drag toward stair at 60% speed. Kill carrier → drop on that tile. Loss only if carrier steps on the entrance stair. Dead chain + living hero inside = loss.
+
+**5. REMAINS AND RATTLES**
+
+- Remains **never despawn**. No 20s, no 30s.
+- Tap Remains with Pick: spend 0 Dig Power. **Do not splash nutrients.** Spawn one Rattle.
+- Rattle has no stomach. It **siphons the nearest walls** the way a block is read. Whatever it drank when it rose sets its breed:
+  - mostly N → bone soldier
+  - mostly M → pale caster bone
+  - mixed → plated bone
+- Rattle mana/life ticks down. At 0 it collapses back into Remains. Player may raise it again. Each raise drinks the walls again (can starve Hexwife soil if you spam raises).
+- Rattle does not eat the food chain.
+
+**6. DEATH TAX AND LOAMITE EXCEPTION**
+
+- Ecosystem unit dies (age, starve, hero, cull): **50%** of stored N or M goes to nearest walls. Other 50% gone. That is the leak.
+- Eating does not transfer 100%. Part of the meal only resets the eater’s drain.
+- Loamite while alive moves **100%** of what it carried from one wall-adjacent cell to another wall. That is the only lossless pump.
+- Loamite that dies of age/starve becomes **Wiltbloom** on the floor. Wiltbloom is a pickup: Pick-smash or a high-tier step converts it to a full wall dump (no 50% tax). Heroes stepping on it destroy it for nothing.
+- Closed map with no new walls dug and no hero corpses → total collapse. That is required.
+
+**7. FAMILIES, IDEAL ROOMS, AI**
+
+Loamite: walks cardinal, turns at walls. Hunts high-N walls, dumps on low-N walls. Ideal = long H / O / T corridors. Short life. Divide when full.
+
+Gnawling: ignores soil. Hunts Loamite. Pupates in a dead-end after N eats. Ideal = loops with moss traffic. Swarm.
+
+Scalekin: hunts Gnawling. Lays eggs only in dug **2×3** rooms. Ideal = rooms off the hero path. Slow. Starving Scalekin cannibalize Gnawling first, then each other.
+
+Hexwife line: ranged **cardinal only**, clear lane, no through-walls. Shots leave **web on floor** that slows heroes 40%. Eats Wisp and Gnawling. Ideal = long straight halls aimed at the stair.
+
+Wyrm: huge HP. Breath is **horizontal only** (left/right). Eats almost anything. Ideal = one-tile choke. Starvation → egg. Next Wyrm from that egg can mutate.
+
+Horned One: weak hit. Aura in the same room: +DEF to allies. Ideal = the Warden room.
+
+All units: HP drains on a timer. Eating is the only refill. Empty stomach = fast flash-drain + AI flips to cannibal / desperation. Old age still kills a fed unit eventually.
+
+Combat: orthogonal only. No diagonal. No through dirt.
+
+**8. MUTATIONS (next birth only)**
+
+- Species starve-deaths high → next birth Bloated (HP up, food need down, slow).
+- Species eaten-deaths high → Twisted (poison or sleep on hit).
+- Species hero-kills high → Dire (flat ATK).
+- Banner `OMINOUS` when a clock trips.
+
+**9. HERO SKILLS (force strategy)**
+
+Every hero has one skill. Telegraph 0.6s.
+
+- Swordsman: line slash, 3 tiles orthogonal.
+- Knight: shield, ignores one hit, then War Cry (small mana splash to nearby walls — yes, even enemies feed mana).
+- Archer: 4-tile cardinal shot.
+- Mage: bolt + leaves mana on the walls beside the impact.
+- Priest: heal lowest-HP ally once; death drops extra mana.
+- Thief: walks past web at 80% speed; if they touch Warden they start the drag at full speed for 2 seconds.
+
+Warrior-types splash N to nearest walls on death. Casters splash M. Knight splits. Remains stay. Splash happens on death, **not** on raising a Rattle.
+
+Waves escalate HP/ATK. Last wave skills are longer or hit two lanes.
+
+**10. SPRITES**
+
+Stop using recolored blobs. Each family must be readable at 1.0× with the name hidden:
+
+- Loamite green puddle with a highlight
+- Gnawling segmented grub
+- Scalekin biped lizard, spear
+- Wyrm four-leg, long tail
+- Wisp floating teardrop
+- Hexwife horned woman, bolt
+- Nightkiss darker cape
+- Veilmother taller caster
+- Stormbride cloud-shoulders
+- Horned One squat demon
+- Rattle obvious ribcage
+- Wiltbloom small floor flower
+- Remains slumped body
+- Warden tiny seated purple lord
+- Heroes: blade, bow, plate, staff, robe, dagger — different silhouettes
+
+Soil tiles must look like the reference shots: mossy vs mushroom vs white-vein vs purple spark vs heart-glow.
+
+**11. HUD**
+
+Dig Power, Horde Power, WAVE x/y, NEXT RAID mm:ss, Warden SEATED / LOCKED / CARRIED / DROPPED. Drag pips toward the stair while carried. Soil heatmap optional; walls must already be readable.
+
+**12. ACCEPTANCE**
+
+1. Dug floor never holds N/M. Heatmap on floor is empty.
+2. Remains sit forever until tapped. Tap = Rattle only, no splash.
+3. After wave clear, upgrade panel, then a real wait, then stronger wave.
+4. Buying Scalekin tier 2 does not buff lizards already walking.
+5. Hexwife cannot shoot diagonal or through a wall.
+6. Warden cannot be moved mid-hunt.
+7. Grab snaps camera once.
+8. Starve a species → next one out of a wall is visibly Bloated.
+9. Leave the map closed with no new digs → chain dies.
+10. A player who only tunnels and never builds an H-corridor of Loamites cannot reliably reach Scalekin before wave 3.
+
+Implement the 50% death tax and wall-only storage first. Then upgrades. Then hero skills. Then sprites. Do not collapse ECO WAIT. Do not put nutrients on the path.

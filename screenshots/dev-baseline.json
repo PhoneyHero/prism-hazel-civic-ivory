@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Loam Lord",
+      "hasCanvas": false,
+      "bodyTextLen": 1081,
+      "bodyTextHash": "88cf131cc797177f1db31656d0c3c44adc89958020a362b9227ec6cc1c436a94",
+      "bodyTextPrefix": "A GOD WITH A PICK Loam Lord 1.6.4 · Rune Dig a living dungeon. R",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Loam Lord",
+      "hasCanvas": false,
+      "bodyTextLen": 1081,
+      "bodyTextHash": "88cf131cc797177f1db31656d0c3c44adc89958020a362b9227ec6cc1c436a94",
+      "bodyTextPrefix": "A GOD WITH A PICK Loam Lord 1.6.4 · Rune Dig a living dungeon. R",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

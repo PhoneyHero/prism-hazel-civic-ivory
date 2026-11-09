@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #140e0a;
+  --color-surface: #241810;
+  --color-raised: #3a291c;
+  --color-fg: #f3e6c8;
+  --color-muted: #b5a48a;
+  --color-primary: #6fbf4a;
+  --color-primary-fg: #10210c;
+  --color-accent: #e25b3a;
+  --color-accent-fg: #1a0c08;
+  --color-line: #5c4030;
+  --color-grub: #e2b04a;
+  --color-scale: #e07a3d;
+  --color-wisp: #8ec8d4;
+  --color-hex: #d46b8a;
+  --color-bud: #d6e27a;
+  --color-vamp: #b45678;
+  --color-succ: #f0b6d4;
+  --color-nimbus: #f3e7a0;
+  --font-display: "Pixelify Sans", ui-monospace, monospace;
+  --font-body: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-body);
+    overscroll-behavior: none;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.safe-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+
+.safe-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 2px solid var(--color-line);
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    4px 4px 0 var(--color-line);
+}
+
+.pressy {
+  transition: transform 120ms ease;
+}
+
+.pressy:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressy {
+    transition: none;
+  }
+
+  .pressy:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}

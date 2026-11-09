@@ -1,0 +1,115 @@
+Paste this.
+
+---
+
+**PROMPT — Loam Lord patch. Edit the current project. Do not restart. No backend. Keep existing names.**
+
+**A. EMPTY HOLLOW IS NOT A LOSS**
+
+Census at 0 living monsters is not defeat. Defeat only if a hero carrying the Warden steps on the entrance stair. A carrier can still die mid-drag. Then the Warden drops and the wave continues.
+
+**B. WARDEN PETITION**
+
+After a wave is fully dead, wait **3 seconds**. Then:
+
+- Wave 1 only: snap camera to Warden, then an old-school RPG bar (portrait + text + two choices), same layout as “Aye / Nay”:
+
+`WARDEN: The hollow held. Shall I bless the next brood with what the pick still has?`  
+`Aye` / `Nay`
+
+Aye opens upgrades. Nay closes.
+
+- Later waves: no snap. Same bar. Tap the Warden during ECO WAIT to ask again. Hunt = no shop.
+- First Aye also says: `Only what is born after you pay is blessed.`
+
+**C. NAVIGATION**
+
+Remove left-hand wall-follow. Restore the previous mover (A* / last pre-left-hand version). Heroes share map intel **only when they stand on adjacent tiles** (1-block range): dead-end flags and seen tiles. No radio across the maze.
+
+**D. LOAMITE LIFECYCLE**
+
+Loamite is a state machine, not a simple death.
+
+1. `WALK` — vitality ticks down. Sucks ~5 N from rich walls, dumps into poor walls.
+2. Vitality ≤ 0 **or** belly full → root on current air tile → `BUD`. Cannot move. Sucks orthogonal walls, radius 1.
+3. If it drinks enough → `BLOOM` (Wiltbloom / blossom). Radius 2. Bites a hero on an adjacent tile.
+4. Bloom lifespan ends naturally → hatch `floor(storedN / 10)` new Loamites (min 1, max 4) with full HP and empty bellies. No corpse.
+5. Gnawling that eats a Bud/Bloom takes the stored N and may pupate.
+6. Player Smash on Bud/Bloom: no hatch. Slam stored N into orthogonal walls.
+
+This is the low-tier faucet. Path bloom chance on empty dug tiles is **0.5% every 12s**, cap 6 extra flowers. Smash those the same way.
+
+**E. PREDATORS AND SLEEP**
+
+- If a predator is below full HP it **always** eats valid prey to heal. No skip.
+- If it is full HP and Loamite count < 4, it may skip Loamites and wander / sleep.
+- Do **not** put newborns to sleep on spawn. Sleep only after a fight or after a full meal, and only Scalekin / Wyrm. Sleep has a cap (8s). Hit or adjacent prey wakes them. Fix the “born asleep for a long time” bug.
+
+**F. RATTLES (Skeleman rules)**
+
+Remains are not soil. They never bleed N/M on death or on raise.
+
+On hero death store `manaAtDeath` and class on the pile.
+
+Wisp that touches Remains is consumed. `spiritCount++`. At 5 the pile turns **red**.
+
+Tap Remains with Pick (0 DP), no splash:
+
+- red pile → Red Rattle (fast, high ATK)
+- manaAtDeath high or Mage/Priest → caster Rattle
+- mid → plated Rattle
+- low / Swordsman / Thief → bone Rattle
+
+Living Rattle burns internal mana (~45s tier1, ~90s plated/death-knight). Nearby Wisps drain it faster. At 0 it collapses to Remains again. Re-raise allowed.
+
+Max **4** living Rattles. Further taps do nothing until one collapses.
+
+Rattle death: Remains only. **0** N/M to walls.
+
+**G. HERO STAMINA AND WINS**
+
+Keep three wins: combat, stamina collapse, stage clock.
+
+Stamina (walk 1 / melee 2 / skill 8):
+
+- W1: 90  
+- W2: 110  
+- Mid: 130  
+- Last wave: 160  
+
+Stage clocks unchanged from last patch (Hollow 3:30 … Deep Throne 7:30). Clock 0 and Warden not on the stair in a carrier’s hands = player win.
+
+Kill-snowball: +4% ATK and +2 stamina per monster slain, cap +20% ATK.
+
+Intel share: adjacent tiles only.
+
+**H. VISUAL TIERS**
+
+New births change look by shop tier or mutation. Living units keep old body.
+
+Loamite puddle → veined → moss lump → flowering lump.  
+Gnawling grub → plated → horned → long.  
+Scalekin spear → crest → armor → dragonewt.  
+Wyrm small → fire-gut → extra jaw → pale elder.  
+Wisp spark → core → storm.  
+Hexwife → caped Nightkiss → Veilmother → Stormbride.  
+Rattle bones → pauldron → rune skull → death-knight. Red Rattle is crimson.
+
+Bud is a rooted lump. Bloom is an open flower that can bite.
+
+**I. NUTRIENT GRID**
+
+Solid walls hold N/M. Air holds 0. Dig splits the dug wall’s value into orthogonal solid neighbors. Loamite is the truck. Death of ecosystem units (not Rattles) returns 50% to orthogonal walls. Heroes are the large positive. High-tier death should be able to push a neighbor into the Loamite band (10–29 N).
+
+**J. ACCEPTANCE**
+
+1. Wipe the census. Wave is not lost until the stair-carry.  
+2. Wave 1: 3s pause, camera to Warden, Aye/Nay bar. Later waves: bar only.  
+3. Loamite roots into Bud then Bloom, then hatches slimes — or Smash slams walls.  
+4. Newborns are awake.  
+5. Hungry Scalekin still eat the 3rd Loamite. Full Scalekin may skip.  
+6. Red Remains after 5 Wisp merges. Raise = Red Rattle. Rattle death feeds no walls.  
+7. Heroes do not left-hand loop. Adjacent heroes copy dead-end flags.  
+8. Path extra blooms are rare (0.5%).
+
+Do not restart the project. Do not add a server. Do not put N/M on air tiles.

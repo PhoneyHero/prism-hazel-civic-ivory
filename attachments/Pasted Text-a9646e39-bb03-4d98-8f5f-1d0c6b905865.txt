@@ -1,0 +1,73 @@
+Update the existing Loam Lord game. Keep the current art, names, and feel. Fix the bugs and deepen the simulation to match What Did I Do to Deserve This, My Lord!? 2 systems. Do not add a backend. Do not add accounts.
+1. OVERLORD MUST EXIST BEFORE RAID
+The raid timer must not start, and heroes must not spawn, until an Overlord is on a dug tile.
+If the player never taps Throne, when the prep timer hits zero the game AUTO-PLACES the Overlord on the best dug tile: farthest walk distance from the entrance stair, not a 1-tile stub, preferably at the end of a corridor.
+Show a short banner: “Throne claimed.”
+Player may still move the throne twice after auto-place.
+Heroes path to the Overlord. They never wander forever in an empty map.
+2. CAPTURE IS A DRAG, NOT INSTANT LOSS
+When a hero reaches the Overlord they do not win instantly.
+That hero picks up the Overlord and walks back toward the entrance stair at reduced speed.
+Other heroes escort or keep fighting.
+If dungeon monsters reduce that carrier to 0 HP before they reach the stair, the Overlord drops on that tile. Player can tap Throne to reseat him (uses one of the remaining moves if any).
+Loss only if the carrier steps onto the entrance stair while holding the Overlord.
+This is the only lose-to-capture condition. Chain-wipe while a living hero is still in the hollow is still a loss.
+3. DIG POWER
+Raise starting Dig Power by +10 on every stage (Chamber keeps its large budget).
+Unused Dig Power does not need to carry between stages unless already implemented.
+4. SOIL, WALLS, AND NUTRIENT / MANA RULES
+Every undug block is a soil cell with two hidden integers: nutrient 0–3+ and mana 0–3+. Values are predetermined per stage layout, not random each tap.
+Birth table when a block is dug:
+NUTRIENT CHAIN (5 births)
+N1 → Moss (walks cardinal, turns at walls, pulls nutrient from current cell and dumps onto the next cell and onto adjacent UNDUG wall faces)
+N2 → Crawler (hunts Moss, pupates after enough eats)
+N3 → Lizard (hunts Crawlers, lays eggs only in a dug 2×3 room)
+N2+N3 mix or high N after Lizard presence → Drake (apex, eats Crawler, Lizard, Witch)
+Bud/Flower is the Moss upgrade when a Moss dies fat on high-N soil (counts as the fifth nutrient form)
+MANA CHAIN (5 births, match nutrient count)
+M1 → Spirit (same job as Moss but for mana)
+M2 → Witch (ranged cardinal shots, eats Spirit and Crawler)
+M3 → Vampire (stronger Witch)
+M3+ → Succubus (faster breed, fragile)
+High M after Witch line exists → Nimbus (fifth mana form)
+Drake remains the shared top predator.
+Walls matter. Nutrients and mana live in undug neighboring blocks, not only on walked floors.
+When you smash a monster, a fungus, or a hero corpse: splash N or M onto the 4 adjacent tiles, INCLUDING undug walls. Those walls level up. Digging them later births the matching tier.
+When a Moss/Spirit walks along a corridor, they also leach from and paint the wall tiles they brush.
+Hero death: Warrior / brute drops NUTRIENT on adjacent floors and walls. Mage / priest / witch-hero drops MANA. Mixed class splits both.
+Monster death: nutrient-born splash N, mana-born splash M.
+Heat map must show wall stores, not just open floor.
+5. HEROES
+More hero types. Minimum roster: Swordsman, Archer, Mage, Priest, Knight, Thief.
+Warrior-types drop nutrient. Caster-types drop mana. Knight drops both small.
+Stages use multiple waves. Wave 2 and 3 spawn only after wave 1 is dead or after a mid-stage timer, whichever the stage script says.
+Later stages use higher HP/ATK heroes and overlapping waves.
+Heroes path only on dug tiles. They fight the first monster they touch. They prioritize the Overlord once they have line of corridor to him.
+6. STAGES
+Replace the tiny set with at least these:
+First Hollow — 1 wave, 1 weak swordsman. Tutorial soil. Auto-place still applies.
+Mossworks — 2 waves. Teach nutrient splash on walls.
+Twin Gate — 2 waves, swordsman + mage so both resources drop.
+Witchwell — mana-heavy walls. 2 waves, mage first.
+Bone Procession — 3 waves, Knight on wave 3.
+Deep Throne — 3 waves, mixed roster, stronger ATK. Tight Dig Power even with +10.
+The Chamber — sandbox, huge Dig Power, player taps “Summon raid” when ready. No lose-for-empty-throne until they summon.
+Each story stage: prep time → mandatory Overlord on grid → wave 1 → wave 2/3 → win if all heroes dead and Overlord not carried out.
+7. MUTATION (keep, make it visible)
+Stress clocks per species:
+Starvation deaths → next birth of that species is Bloated (high HP, slow).
+Eaten-by-predator deaths → Twisted (poison or sleep on hit).
+Killed-by-hero deaths → Dire (flat stat bump).
+Banner “ominous” when a clock trips. Almanac logs the variant.
+8. UI
+Dig Power, raid timer, wave counter, Horde Power, Overlord state: SEATED / CARRIED / DROPPED.
+If carried, show a drag progress pip toward the stair.
+Heat map toggle for N and M including walls.
+Do not let the player start a raid with 0 Overlord on the board.
+9. ACCEPTANCE
+A player who never taps Throne still gets an auto-placed Overlord and cannot win by idling an empty maze.
+A player who loses the Overlord mid-fight can still kill the carrier and recover him.
+Breaking a wall after a hero corpse nearby can birth Spirit or Witch, not only Moss.
+Five nutrient forms and five mana forms exist and can appear in Chamber.
+Dig Power is +10 versus current build on story stages.
+Ship as the same single-file / same project. Do not reset art style. Do not add a server.

@@ -1,0 +1,39 @@
+PROMPT — traffic, Bloom/mushroom, nests, dirt, field guide. Do not merge modules.
+Edit only what each file owns:
+goals.ts — stuck timeout, re-route(), units pass through units
+units.ts — Bloom/mushroom objects, egg-on-nest only, sleep/cocoon flags
+soil.ts — wall faces, per-run soil roll, slight +M
+draw.ts — draw those faces, flower, mushroom, Zzz, small field-guide icons
+Field guide copy lives where the menu already is (likely loam-game.tsx or a guide component). Add icons there. Do not dump guide art into engine.ts.
+Do not edit heroes.ts except if frustration-dig is missing. Do not merge into engine.ts. No new features beyond this list.
+1. PASS-THROUGH
+Monsters and heroes do not block each other’s tiles. Two units may occupy the same air cell. No queue, no frozen line in a 1-tile hall. Sleep / cocoon / nest / Bloom / web do not become walls.
+If a unit is not in an intentional idle (sleep, cocoon, nest claim, Bloom/mushroom, Horned One planted in a room) and it stays on the same cell ≥ 1.2s while it has a goal it cannot step toward: call route() again from here. Drop the old path. Pick the next best dug cell for that goal. Only heroes may smash a wall when frustrated. Monsters never dig.
+2. LOAMITE BLOOM / WISP CAP
+Loamite at old-age or Hunger-0-with-belly: unit is removed. Spawn a Wiltbloom floor object on that cell (flower sprite, not a Loamite). Any unit may walk that cell. Smash or stomp uses existing hatch rules (2 / 3 / 4). While it is a flower it does not path and does not block.
+Wisp old-age: same, spawn a mana-cap mushroom object. Stomp/smash → 2 Wisps. Only Loamite and Wisp convert to a plant. No other family.
+3. NEST EGG
+Scalekin egg only on the nest tile. One egg per nest. If the nest already has an egg, wait. No eggs on neighboring floor.
+4. Zzz
+Cocoon and any sleeping unit draw a small Zzz next to the sprite. Clear Zzz when they wake or hatch.
+5. DIRT FACES
+Stop the candy-crush rainbow. Walls are dirt first.
+N = moss / brown-green. M = dull violet motes. Mixed = dirt + a few opposite flecks.
+Keep the locked bands (0–9 splash only, 10–29 Loamite/Wisp, 30–54 Gnawling/Hexwife, 55+ Scalekin/Wyrm). Substages only change speck density / vein / crack, not a new candy color:
+0–3 dry grey · 4–6 faint dust · 7–9 damp
+10–16 thin specks · 17–23 patch · 24–29 veins
+30–37 plate · 38–45 hot core · 46–54 sparks
+55–69 carapace · 70–89 cracks · 90+ hot mass
+Player should guess the baby from the wall.
+6. PER-RUN SOIL
+Each time a stage starts, re-roll wall N/M. Do not reuse a fixed layout. Spread: no single quadrant may hold more than ~35% of the stage’s total N or total M. Bump average M about +15% vs current, still mostly N on nutrient stages, still M-heavy on Witchwell.
+7. FIELD GUIDE
+In the existing guide cards, put a small sprite next to the name it talks about (Loamite, Gnawling, wall speck, Wiltbloom, Warden pick). One icon per idea. Not a comic. Use the same sprites the game already draws.
+ACCEPTANCE
+Two Scalekin in a 1-tile hall walk through each other. No freeze.
+Loamite Bloom is a flower on the floor; a Gnawling can walk onto it and stomp.
+Egg sits on the nest tile only. Second egg waits.
+Cocoon shows Zzz.
+New run of First Hollow is not the same N/M stamp as the last run.
+File table still split. units.ts may grow; engine.ts must not swallow the others.
+Print path / lines / tokens when done.

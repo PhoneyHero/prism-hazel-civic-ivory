@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Loam Lord",
+      "hasCanvas": false,
+      "bodyTextLen": 1084,
+      "bodyTextHash": "e8660b5ebc321a93f3b2398824d4b0dfe47aea738ae07a124eaf5cbcd6c9e4df",
+      "bodyTextPrefix": "A GOD WITH A PICK Loam Lord 1.6.5 · Officer Dig a living dungeon",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Loam Lord",
+      "hasCanvas": false,
+      "bodyTextLen": 1084,
+      "bodyTextHash": "e8660b5ebc321a93f3b2398824d4b0dfe47aea738ae07a124eaf5cbcd6c9e4df",
+      "bodyTextPrefix": "A GOD WITH A PICK Loam Lord 1.6.5 · Officer Dig a living dungeon",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

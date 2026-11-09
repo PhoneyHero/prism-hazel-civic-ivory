@@ -1,0 +1,99 @@
+Navigation is the fire. Everything else waits. Paste this as one shot. Do not mention wall-follow in any follow-up or the model will put the roomba back.
+
+---
+
+**PROMPT — Loam Lord. Rewrite ALL unit movement from scratch. Edit the current project. Do not restart stages or rename units. No backend.**
+
+Names stay: Loamite, Gnawling, Scalekin, Wyrm, Wisp, Hexwife, Nightkiss, Veilmother, Stormbride, Horned One, Rattle, Wiltbloom, Warden, Remains.
+
+**0. DELETE THE CURRENT MOVER**
+
+Remove every wander-roulette, random-direction-at-intersection, “pick a neighbor and hope,” and any stuck-in-dead-end dither. Replace with the systems below. If a unit has no legal goal it idles 0.4s then picks a new goal. It never oscillates two tiles.
+
+Grid is 4-direction only. No diagonals. No walking through solid walls. Combat and shots are cardinal with a clear lane.
+
+**1. SHARED PATH TOOL**
+
+Write one function: `route(from, to) -> list of dug tiles`.
+
+- Only dug / air tiles are walkable.
+- Prefer the shortest walk.
+- If the target is unreachable, return empty and the unit picks another goal.
+- Recalc when the grid changes (a wall dug, a wall smashed by a hero) or every 1.5s while moving.
+- Units do not stand still more than 0.6s unless their role says rest / bud / cocoon / sleep / web.
+
+**2. HERO BRAIN (always exploring)**
+
+Heroes spawn at the stair. Goal order, top wins:
+
+1. If they have line-of-corridor on the Warden → route to Warden. On contact they pick him up and route to the stair at 60% speed (Thief 2s at full). Camera snap `WARDEN SEIZED` once.
+2. Else if a monster is in 3-tile cardinal range → route to that monster and fight.
+3. Else if an unexplored dug tile exists → route to the nearest **unvisited** dug tile. Mark tiles visited as they walk. Do not re-visit a dead-end corridor unless a new opening was dug on it.
+4. Party intel: if two heroes stand on adjacent tiles they copy visited + dead-end flags. No long-range radio.
+5. If no unvisited tiles remain and Warden not seen → route toward the farthest dug tile from the stair (deep search).
+6. **Stuck ≥ 2.5s** in the same cell or same two-cell wobble: frustration += 1. At 3, smash one orthogonal solid wall (0 player Dig Power). That tile becomes air. If it held N/M, split that value into remaining solid neighbors. Then reset frustration and re-route.
+7. Stamina still burns (walk 1 / melee 2 / skill 8). At 0 they die and leave Remains.
+8. Skills fire on cooldown when a monster is in lane. Skill splash still writes N or M into orthogonal walls.
+
+Heroes never stand in a dead end “thinking.” They turn around on the next tick and take the next unvisited branch.
+
+**3. MONSTER GOALS (each family has a job)**
+
+Every monster always has exactly one goal. Re-pick when the goal is done or invalid.
+
+**Loamite (nutrient truck)**  
+Goal: richest orthogonal wall in 4 tiles that still has N, else poorest wall to dump. Walk the route, suck ~5, walk, spit ~5. Vitality ticks. Full belly or vitality 0 → root in place as Bud (radius-1 wall drain) → Bloom (radius-2, bites adjacent heroes) → natural death hatches 1–4 empty Loamites OR Smash slams stored N into walls (no hatch).
+
+**Wisp (mana truck)**  
+Same as Loamite but M only. Does not root into a flower. Dies → 50% M to walls.
+
+**Gnawling (hunter → cocoon → fly)**  
+Goal while crawling: nearest Loamite or Bud/Bloom in 3 tiles, else wander to a random dug tile at the edge of a cluster (not coin-flip every step — pick a destination 6–10 tiles away and route there). After enough eats: freeze as Cocoon. Hatch timer → Fly. Fly goal: nearest Loamite, or a quiet corner to drop one egg, then hunt again. Scalekin can eat crawler, cocoon, or fly.
+
+**Scalekin (feed + nest)**  
+Hungry or HP missing → route to nearest Gnawling / cocoon / fly and eat. Full HP and Loamite count ≥ 4 may still eat Gnawlings. Full HP and Loamite count < 4 → do not eat Loamites. Nest goal: find a dug rectangle at least 2×3; stand there; lay an egg on a timer after meals. Sleep only after a fight or a full meal, max 8s, never on spawn. Wake if hit or prey adjacent.
+
+**Hexwife line**  
+Goal: nearest Wisp or Gnawling to eat, else patrol a long straight dug hall. Every few tiles if the floor is bare, leave a web token that slows heroes 40%. Ranged attack cardinal only, clear lane.
+
+**Wyrm**  
+Goal: hold a straight horizontal dug run at least 4 tiles long. Walk that run only. Breath is horizontal. Attack if a hero is on that run. Do not wander the whole map. If no 4-tile run exists, sit and act as a turret. Eats almost anything when hungry. Death / age → egg. Hatch tier follows mana eaten.
+
+**Horned One**  
+Goal: the Warden’s room. Stand there. Aura +DEF to allies in that room. Weak melee if a hero enters.
+
+**Rattle**  
+Goal: patrol like an explorer — pick the nearest unvisited dug tile in a 8-tile memory unique to that Rattle, then the next. Fight heroes in range. No N/M belly. Death → Remains, 0 splash. Mana lifespan 45s / 90s by tier. Wisps touching Remains can redden the pile (5 merges → Red Rattle). Max 4 living Rattles.
+
+**4. COMBAT**
+
+Same tile or orthogonal adjacent = melee. Ranged needs a clear cardinal lane. No through walls. Wyrm must actually deal breath damage on its row. If a Wyrm and a hero share a horizontal run and the Wyrm is not attacking, that is a bug — fire every 1.2s.
+
+**5. DIRT AND BLOOMS**
+
+Every solid wall has N in 0–6 at minimum even when “empty.” Digging a 1–6 wall births nothing but **must** split that 1–6 into orthogonal solid neighbors. N≥10 still births Loamite, etc.
+
+Path tokens: each dug air tile, every 12s, 0.5% Wiltbloom (N dump) and 0.5% separate mana-cap (M dump, purple). Cap 6 of each. Smash or unit-step on Wiltbloom / cap dumps to walls. Hero-step destroys with no dump.
+
+**6. KEEP**
+
+- Empty census is not defeat. Loss only if carrier steps on the stair with the Warden.  
+- After wave clear: wait 3s, then Aye/Nay Warden bar (snap only wave 1). Shop only blesses new births. Reopen by tapping Warden in WAIT.  
+- Remains stay. Tap = Rattle, no splash.  
+- 50% death tax on ecosystem units, not Rattles.  
+- Heroes are the large +N/+M.  
+- Newborns spawn awake.
+
+**7. ACCEPTANCE**
+
+1. A hero in a dead-end turns around within one second and walks out. No two-tile shuffle.  
+2. Two adjacent heroes do not both re-clear the same empty spur.  
+3. Loamite walks to a rich wall, then a poor wall, not random.  
+4. Gnawling that has eaten enough becomes a still cocoon, then a fly.  
+5. Scalekin walks to a 2×3 room to egg.  
+6. Wyrm on a 6-tile horizontal hall faces a hero on that hall and deals damage.  
+7. Hexwife leaves webs and shoots only in a clear row/col.  
+8. Frustrated hero breaks one wall and path-updates.  
+9. No unit stands 3+ seconds with a reachable goal.
+
+Build the router first. Then hero explore. Then Loamite truck. Then Gnawling cocoon. Then Wyrm hall. Do not ship until 1 and 6 pass.

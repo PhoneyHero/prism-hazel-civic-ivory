@@ -1,0 +1,124 @@
+PROMPT — Loam Lord patch. Apply on top of current build. Do not rewrite from scratch. Do not add a backend.
+Also implement the attached ecosystem blueprint: closed-loop food chain, metabolic leakage so the dungeon cannot AFK-sustain, heroes as the only large energy injector, two parallel tracks (Nutrient green-brown vs Mana purple-pink).
+A. CAMERA — STOP THE RANDOM ZOOM
+Find and delete every auto-zoom, auto-fit, or lerp-to-event that changes scale when a unit spawns, dies, or the throne moves.
+Camera scale changes ONLY from player pinch.
+Pinch zoom range: 0.55× to 2.2×. Default 1.0× shows about 12×9 tiles.
+One-finger drag pans. Two-finger pan allowed.
+No rubber-band zoom. No “focus on hero” zoom. No resize-on-wave.
+B. MAP SIZE
+Story stages: 24 columns × 18 rows of diggable soil, plus a 1-tile bedrock border that cannot be dug.
+Entrance stair is a fixed dug tile on the top or left edge.
+Chamber: 28×20.
+If the grid does not fit the screen, that is correct. Player pans. Do not shrink the grid to fit.
+C. DIG POWER (scaled from WDIDTDTML averages)
+Stage
+Starting Dig Power
+First Hollow
+90
+Mossworks
+100
+Twin Gate
+110
+Witchwell
+110
+Bone Procession
+120
+Deep Throne
+130
+Chamber
+200
+After each wave is fully dead, grant +12 Dig Power (banner: “Carrion stipend”). This is so the player can break the walls the corpses just painted. Unused Dig Power stays in the stage. Smash / cull a monster does not spend Dig Power.
+D. SOIL VISUALS — WALLS ARE READABLE
+Every undug tile stores Nutrient 0–3+ and Mana 0–3+.
+Draw the block so a player can read it without the heat-map:
+N0/M0: plain brown dirt
+N1: light moss specks
+N2: thick moss / small mushrooms
+N3: pale packed loam / white veins
+M1: faint purple sparkle
+M2: pink-purple glow veins
+M3: bright rune-brick glow
+Mixed: moss + purple sparkle on the same face
+Moss and Spirits leach floors and the undug wall faces they brush. Smash, monster death, and hero death splash onto the 4 orthogonal neighbors, including undug walls. Heat map still works but walls must already look different.
+E. COMBAT RULES — CARDINAL ONLY
+All NPCs (monsters and heroes) attack and shoot only up / down / left / right.
+No diagonal attacks. No attacks through undug walls. No attacks through bedrock.
+Ranged (Witch, Vampire, Succubus, Nimbus, Mage, Priest) need a clear orthogonal lane.
+Melee needs an orthogonally adjacent dug tile.
+Pathfinding is 4-direction only.
+F. WAVES — REAL ECO GAPS
+Stop spawning the next wave the instant the last hero dies.
+Loop for every story stage:
+Prep (throne must exist; auto-place if player never tapped Throne).
+Wave N enters.
+When Wave N is dead: ECO WAIT. Do not spawn Wave N+1 yet.
+ECO WAIT duration:
+First Hollow: 40s (only 1 wave, so this is unused)
+Mossworks / Twin Gate: 50 seconds
+Witchwell / Bone Procession: 60 seconds
+Deep Throne: 70 seconds
+During ECO WAIT the food chain runs, leakage ticks, player spends the +12 stipend on enriched walls.
+Then Wave N+1. Stronger roster than N.
+HUD shows WAVE 2/4 and NEXT RAID 0:47.
+Wave counts:
+First Hollow: 1 wave
+Mossworks: 3 waves
+Twin Gate: 3 waves
+Witchwell: 4 waves
+Bone Procession: 4 waves
+Deep Throne: 5 waves
+Chamber: player taps Summon Raid; each tap starts a wave after a 15s warning; still no raid until throne is seated
+Heroes get stronger each wave. Example Deep Throne:
+W1: 1 Swordsman (low HP)
+W2: Swordsman + Archer
+W3: Knight + Mage
+W4: Knight + Priest + Archer
+W5: two Knights + Mage (highest ATK/HP)
+Warrior / Archer / Knight drop Nutrient on death. Mage / Priest drop Mana. Knight drops a little of both.
+G. HERO CORPSES AND SKELETONS
+Dead hero leaves a corpse pile on that tile for 20 seconds.
+Smash the corpse with the pick (free, no Dig Power): splash remaining N/M to neighbors and spawn one Skeleton.
+Skeleton is a slow cardinal melee sentry. It does not eat the food chain. Heroes can kill it. It dies of age after a long timer.
+If the corpse is not smashed it still splashes N/M when it despawns, but no Skeleton.
+H. ECOSYSTEM LEAKAGE (blueprint)
+Every move / breed / idle tick burns a small energy tax.
+With no hero corpses and no new soil cracked, populations decline. The hollow cannot idle forever.
+Hero death is the large positive injection. That is the loop: survive wave → stipend + corpse nutrients → crack walls → higher births → next harder wave.
+I. KEEP PRIOR FIXES
+No raid until Overlord is on a dug tile. Auto-place at farthest real corridor end. Banner “Throne claimed.” Two manual moves after.
+Capture = drag to stair at reduced speed. Kill carrier → drop. Loss only if carrier steps on the entrance stair while holding him. Dead chain + living hero inside = loss.
+Chains stay: Nutrient Moss / Bud / Crawler / Lizard / Drake. Mana Spirit / Witch / Vampire / Succubus / Nimbus. Drake eats across.
+Mutations: starve→Bloated, eaten→Twisted, hero-killed→Dire.
+J. SILHOUETTES
+Readable at a glance, low-res is fine:
+Moss = green blob
+Crawler = white grub / roach
+Lizard = biped reptile with a spear
+Drake = four-leg reptile, larger
+Spirit = pale wisp
+Witch = horned woman, missile
+Vampire = darker, cape
+Succubus = slimmer caster
+Nimbus = cloud-bodied caster
+Skeleton = bone humanoid
+Swordsman = shield + blade
+Archer = bow
+Mage = staff + hat
+Priest = robe + cross/sigil
+Knight = full plate
+Overlord = small seated purple lord
+Corpse = slumped body
+Carried Overlord = hero sprite towing a tiny lord
+K. ACCEPTANCE CHECKS
+Camera never zooms by itself. Pinch and pan only.
+Grid is 24×18 on story maps. Player must pan to see the far corner at 1.0×.
+After wave 1 dies, at least 50 seconds pass before wave 2 sprites exist.
++12 Dig Power appears after each cleared wave.
+A mage corpse next to a wall makes that wall look purple; digging it can birth Spirit or Witch.
+Smash corpse → Skeleton.
+Witch cannot shoot diagonally or through dirt.
+Empty throne cannot be idled for a win.
+Soil tier is visible on undug blocks without opening the heat map.
+Do not shrink the map to avoid scrolling. Do not collapse ECO WAIT into “spawn when previous wave dies.”
+That is the full message. After they build, first test: kill wave 1 and watch the clock. If wave 2 exists before 50 seconds, the wait is still wrong. Second test: pinch in, pinch out, walk a hero spawn — scale must not jump.

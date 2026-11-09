@@ -1,0 +1,45 @@
+PROMPT — mutations + shop stats + starve. Gameplay patch. Files already split. Do not merge them.
+Edit only:
+src/game/units.ts — hunger, cannibal, shop-on-birth, stress, branches, settle, Wyrm egg look
+src/game/soil.ts — only if death splash must be called from a new death path
+src/game/flow.ts — banners only (looks ominous, settles)
+Do not edit grid.ts, goals.ts, heroes.ts, combat.ts, engine.ts, draw.ts, selfcheck.ts unless an import will not compile. Do not recreate engine.ts as a monolith. Do not add Calm. Do not add a level-loop reset.
+STARVE (units.ts)
+Hunger 100. Drain / sec while Hunger > 0:
+Loamite 1.25 (~80s) · Wisp 1.25
+Gnawling 1.82 (~55s) · Hexwife 1.82
+Scalekin 1.54 (~65s) · Wyrm 1.39 (~72s)
+Meal → Hunger 100. Rattle and Horned One: no Hunger.
+Hunger 0 → HP bar flashes, HP falls ~4% max per second until a meal or death. Loamite with belly left still Blooms first. If HP hits 0, existing death splash / Bloom rules run.
+CANNIBAL (units.ts, Hunger < 25 or HP flashing)
+Scalekin may eat Scalekin / Gnawling / Loamite. Still skip Loamite if count < 4 unless flashing.
+Wyrm may eat Hexwife / Gnawling / Scalekin; a weaker Wyrm only if flashing.
+Gnawling may eat Gnawling if no Loamite in 4 tiles.
+Hexwife may eat Hexwife if no Wisp in 4 tiles.
+Eat tax unchanged (Loamite/Wisp 100%, else 50%).
+SHOP (units.ts)
+Levels 1–4, 40 DP, new births only. +18% HP, +14% ATK, +8% DEF per level. No extra passives. Living units keep old stats and sprite. Rattle has no shop.
+STRESS (units.ts)
+Loamite, Gnawling, Scalekin, Hexwife: 0–100.
+Hero or predator death +8. Starve death +12. Cannibal death +10.
+70 → banner [FAMILY] looks ominous (flow.ts).
+80 → next birth / egg / cocoon hatch uses the branch below. Stress → 40. Shop level kept. Living bodies do not change.
+Wyrm / Horned One / Rattle: no Stress.
+BRANCHES (next birth only)
+Loamite: Abnormal = 2s paralyze puddle, lower HP. Giant = fat, +80% HP, −40% drain, split 2 at 10 N. Rare if 11–15 Loamites and 0 Gnawlings for 20s = fast truck, dump +1.
+Gnawling: Abnormal = fly poison 4s. Giant = cocoon 2×, fly +100% HP, −40% drain, one fly fills Scalekin. Rare if Loamite and Gnawling counts differ ≤3 for 20s = +DEF, death also splashes M.
+Scalekin: Abnormal = melee ATK-down 4s. Giant = +120% HP, slow, −40% drain. Rare if last-hit Knight = +25% crit.
+Hexwife: Abnormal = Mage-kill bolt confuse 2s. Giant = melee, no web, −40% drain. Rare if 4 Hexwives in one room and room walls sum M ≥ 90 = room bolt every 8s.
+Branch = whichever death type filled most of the last 80 Stress. Tie → Giant if any starve deaths, else Abnormal.
+SETTLE
+Mutant-branch kills only. Same hero 8 kills, or same invading group 12 kills → next birth Basic at current shop level. Banner [FAMILY] settles. Stress → 0. Living mutants stay mutant.
+WYRM DIET
+Belly M at death ≥ 70 → egg +1 shop look (cap 4). Empty starve death → −1 look (floor 1). 50% tax on non-Loamite food. No Wyrm-vs-Wyrm fights.
+ACCEPTANCE
+Empty Scalekin ~65s then flash-HP.
+Flashing Scalekin can eat another Scalekin.
+Shop +1 does not rewrite living sprites.
+Starve-heavy Loamites → next birth Giant and splits.
+Same hero 8 mutant kills → next birth Basic.
+File table unchanged: still grid/soil/units/goals/heroes/combat/flow/engine. No merge.
+After the patch print the same path/line/token table.
